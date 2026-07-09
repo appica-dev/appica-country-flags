@@ -1,0 +1,3 @@
+import { createCountryFlag } from "../../createCountryFlag.js";
+const BWRounded = createCountryFlag("bw", "<path fill=\"#338af3\" d=\"M40 28c0 4.11-2.067 7.738-5.217 9.9A11.93 11.93 0 0 1 28 40H12q-.352 0-.7-.02c-2.097-.12-4.05-.78-5.721-1.84a12 12 0 0 1-2-1.591A11.96 11.96 0 0 1 0 28V12c0-1.689.349-3.296.978-4.753C2.732 3.187 6.663.287 11.3.02Q11.648 0 12 0h16a12 12 0 0 1 1.3.07c2.02.217 3.89.936 5.483 2.03a12 12 0 0 1 2.621 2.445A11.95 11.95 0 0 1 40 12z\"/><path fill=\"#f0f0f0\" fill-rule=\"evenodd\" d=\"M0 21.267v-7.354h40v12.174H0z\" clip-rule=\"evenodd\"/><path fill=\"#000\" fill-rule=\"evenodd\" d=\"M40 16.522H0v6.956h40z\" clip-rule=\"evenodd\"/>");
+export default BWRounded;
