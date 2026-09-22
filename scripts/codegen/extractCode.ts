@@ -1,3 +1,14 @@
+export type FlagShape = 'circle' | 'rounded'
+
+const SHAPE_SUFFIXES: Record<FlagShape, string> = {
+  circle: 'Circle',
+  rounded: 'Rounded',
+}
+
+export function isFlagShape(value: string): value is FlagShape {
+  return Object.hasOwn(SHAPE_SUFFIXES, value)
+}
+
 export function extractCode(filename: string): string {
   const name = filename.replace('.svg', '')
   const parts = name.split('-')
@@ -18,8 +29,7 @@ export function extractCode(filename: string): string {
   return last
 }
 
-export function codeToComponentName(code: string, shape: 'rounded' | 'circle'): string {
+export function codeToComponentName(code: string, shape: FlagShape): string {
   const upper = code.toUpperCase().replace(/-/g, '')
-  const shapeSuffix = shape === 'rounded' ? 'Rounded' : 'Circle'
-  return `${upper}${shapeSuffix}`
+  return `${upper}${SHAPE_SUFFIXES[shape]}`
 }
