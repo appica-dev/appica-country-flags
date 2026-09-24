@@ -6,9 +6,10 @@ This monorepo contains framework-specific packages living under `packages/`. Eac
 
 ## Packages
 
-|                                                               | Package                       | Version                                                                                                                           | Links                                                                  |
-| ------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| <img src=".github/assets/react.svg" width="35" alt="React" /> | `@appica/country-flags-react` | [![npm](https://img.shields.io/npm/v/%40appica%2Fcountry-flags-react)](https://www.npmjs.com/package/@appica/country-flags-react) | [Docs](https://appica.dev/ui/country-flags) · [Source](packages/react) |
+|                                                                 | Package                        | Version                                                                                                                             | Links                                                                   |
+| --------------------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| <img src=".github/assets/react.svg" width="35" alt="React" />   | `@appica/country-flags-react`  | [![npm](https://img.shields.io/npm/v/%40appica%2Fcountry-flags-react)](https://www.npmjs.com/package/@appica/country-flags-react)   | [Docs](https://appica.dev/ui/country-flags) · [Source](packages/react)  |
+| <img src=".github/assets/svelte.svg" width="35" alt="Svelte" /> | `@appica/country-flags-svelte` | [![npm](https://img.shields.io/npm/v/%40appica%2Fcountry-flags-svelte)](https://www.npmjs.com/package/@appica/country-flags-svelte) | [Docs](https://appica.dev/ui/country-flags) · [Source](packages/svelte) |
 
 More variants are planned — webfont, Vue and more.
 
