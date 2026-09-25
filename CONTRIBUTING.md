@@ -27,7 +27,7 @@ pnpm clean:dist
 pnpm format         # format the codebase with Prettier
 ```
 
-Generated flag components are not committed. After a fresh clone, run `pnpm codegen` before `pnpm test` or `pnpm typecheck`. For one package, use the corresponding filter, for example `pnpm --filter @appica/country-flags-react codegen`.
+Generated flag components are not committed. After a fresh clone, run `pnpm codegen` before `pnpm test` or `pnpm typecheck`. For one package, use the corresponding filter, for example `pnpm --filter @appica/country-flags-react codegen` or `pnpm --filter @appica/country-flags-svelte codegen`.
 
 ### How codegen works
 
