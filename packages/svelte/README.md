@@ -1,4 +1,4 @@
-[![Appica Country Flags for Svelte](https://raw.githubusercontent.com/appica-dev/appica-country-flags/main/.github/assets/appica-country-flags-root.jpg)](https://appica.dev/ui/country-flags)
+[![Appica Country Flags for Svelte](https://raw.githubusercontent.com/appica-dev/appica-country-flags/main/.github/assets/appica-country-flags-svelte.jpg)](https://appica.dev/ui/country-flags)
 
 [![npm](https://img.shields.io/npm/v/%40appica%2Fcountry-flags-svelte)](https://www.npmjs.com/package/@appica/country-flags-svelte)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -19,7 +19,7 @@ pnpm add @appica/country-flags-svelte
 bun add @appica/country-flags-svelte
 ```
 
-Requires Svelte 5 or later. ESM only. Components ship as `.svelte` source and are compiled by your app.
+Requires Svelte 5 or later. ESM only.
 
 ## Usage
 
@@ -27,7 +27,7 @@ There are two ways to use flags: **dynamic** (code-based) and **static** (indivi
 
 ### Dynamic
 
-`CountryFlagRounded` and `CountryFlagCircle` accept a `code` prop and resolve the flag at runtime. Useful when rendering flags from data.
+`CountryFlagRounded` and `CountryFlagCircle` accept a `code` prop and resolve the flag at runtime. Useful when rendering flags from data. Because any code can arrive at runtime, a dynamic component bundles every flag of its shape (about 75 KB gzipped), so prefer static imports for flags known ahead of time.
 
 ```svelte
 <script>
@@ -80,18 +80,21 @@ Works with Tailwind CSS — use `size-*` to control dimensions:
 | `size`  | `string \| number` | `"1em"` | Width and height. Accepts a CSS value (`"2rem"`) or a pixel number (`32`)                                      |
 | `title` | `string`           | —       | Accessible label rendered as an SVG `<title>` element. When omitted, `aria-hidden="true"` is set automatically |
 | `class` | `string`           | —       | CSS class name                                                                                                 |
-| `ref`   | `SVGSVGElement`    | —       | The underlying `<svg>` element. Bind it with `bind:ref`                                                        |
+| `style` | `string`           | —       | Inline styles                                                                                                  |
+| `ref`   | `SVGSVGElement`    | —       | The rendered `<svg>` element, for `bind:ref`                                                                   |
 
 All standard SVG element attributes are also accepted and forwarded to the underlying `<svg>`.
+
+To get the rendered `<svg>` element, bind `ref`:
 
 ```svelte
 <script>
   import { USRounded } from '@appica/country-flags-svelte'
 
-  let svg = $state(null)
+  let flag = $state()
 </script>
 
-<USRounded bind:ref={svg} class="size-8" title="United States" />
+<USRounded bind:ref={flag} />
 ```
 
 ## Country codes
@@ -191,11 +194,15 @@ Full TypeScript support is built in. The `CountryFlagProps` type is exported for
 <script lang="ts">
   import { CountryFlagRounded, type CountryFlagProps } from '@appica/country-flags-svelte'
 
-  let { ...props }: CountryFlagProps = $props()
+  let props: CountryFlagProps = $props()
 </script>
 
 <CountryFlagRounded {...props} />
 ```
+
+## Changelog
+
+What changed in each release is in [`CHANGELOG.md`](./CHANGELOG.md), next to this file.
 
 ## Figma design file
 
