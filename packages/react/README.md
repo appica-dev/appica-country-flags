@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/)
 [![Figma](https://img.shields.io/badge/Figma-design_file-F24E1E?logo=figma&logoColor=white)](https://www.figma.com/community/file/1657080448204231925)
 
-A high-fidelity collection of 261 SVG country flags in rounded and circle shapes for React.
+A high-fidelity collection of 262 SVG country flags in rounded and circle shapes for React.
 
 ## Installation
 
@@ -27,7 +27,7 @@ There are two ways to use flags: **dynamic** (code-based) and **static** (indivi
 
 ### Dynamic
 
-`CountryFlagRounded` and `CountryFlagCircle` accept a `code` prop and resolve the flag at runtime. Useful when rendering flags from data.
+`CountryFlagRounded` and `CountryFlagCircle` accept a `code` prop and resolve the flag at runtime. Useful when rendering flags from data. Because any code can arrive at runtime, a dynamic component bundles every flag of its shape (about 70 KB gzipped), so prefer static imports for flags known ahead of time.
 
 ```tsx
 import { CountryFlagRounded, CountryFlagCircle } from '@appica/country-flags-react'
@@ -82,7 +82,7 @@ All standard SVG element props are also accepted and forwarded to the underlying
 
 ## Country codes
 
-Flags follow [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) codes (e.g. `us`, `gb`, `fr`). 261 flags total.
+Flags follow [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) codes (e.g. `us`, `gb`, `fr`). 262 flags total.
 
 ### Subnational & special flags
 
@@ -177,9 +177,13 @@ import type { CountryFlagProps } from '@appica/country-flags-react'
 const MyFlag = (props: CountryFlagProps) => <CountryFlagRounded {...props} />
 ```
 
+## Changelog
+
+What changed in each release is in [`CHANGELOG.md`](./CHANGELOG.md), next to this file.
+
 ## Figma design file
 
-All 261 flags in both shapes are included in the free [Appica UI Figma file](https://www.figma.com/community/file/1657080448204231925), alongside the component library — use the same flags in your designs that you render in code.
+All 262 flags in both shapes are included in the free [Appica UI Figma file](https://www.figma.com/community/file/1657080448204231925), alongside the component library — use the same flags in your designs that you render in code.
 
 ## Stay updated
 

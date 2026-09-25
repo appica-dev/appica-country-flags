@@ -4,7 +4,7 @@ export default defineConfig({
   entry: ['src/**/*.ts', 'src/**/*.tsx', '!src/**/*.test.ts', '!src/**/*.test.tsx', '!src/**/__tests__/**'],
   format: ['esm'],
   outDir: 'dist',
-  dts: true,
+  dts: false,
   bundle: false,
   sourcemap: false,
   clean: true,

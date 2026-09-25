@@ -1,20 +1,20 @@
 [![Appica Country Flags](.github/assets/appica-country-flags-root.jpg)](https://appica.dev/ui/country-flags)
 
-A high-fidelity collection of 261 SVG country flags for the modern web.
+A high-fidelity collection of 262 SVG country flags for the modern web.
 
 This monorepo contains framework-specific packages living under `packages/`. Each package is published to npm independently.
 
 ## Packages
 
-|                                                               | Package                       | Version                                                                                                                           | Links                                                                  |
-| ------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| <img src=".github/assets/react.svg" width="35" alt="React" /> | `@appica/country-flags-react` | [![npm](https://img.shields.io/npm/v/%40appica%2Fcountry-flags-react)](https://www.npmjs.com/package/@appica/country-flags-react) | [Docs](https://appica.dev/ui/country-flags) · [Source](packages/react) |
+|                                                               | Package                       | Version                                                                                                                           | Links                                                                                                             |
+| ------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| <img src=".github/assets/react.svg" width="35" alt="React" /> | `@appica/country-flags-react` | [![npm](https://img.shields.io/npm/v/%40appica%2Fcountry-flags-react)](https://www.npmjs.com/package/@appica/country-flags-react) | [Docs](https://appica.dev/ui/country-flags) · [Changelog](packages/react/CHANGELOG.md) · [Source](packages/react) |
 
 More variants are planned — webfont, Vue and more.
 
 ## Figma design file
 
-All 261 flags in both shapes are included in the free [Appica UI Figma file](https://www.figma.com/community/file/1657080448204231925), alongside the component library — use the same flags in your designs that you render in code.
+All 262 flags in both shapes are included in the free [Appica UI Figma file](https://www.figma.com/community/file/1657080448204231925), alongside the component library — use the same flags in your designs that you render in code.
 
 ## Stay updated
 
