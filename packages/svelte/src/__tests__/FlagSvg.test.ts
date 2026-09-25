@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/svelte'
 import FlagSvg from '../FlagSvg.svelte'
 import RefProbe from './RefProbe.svelte'
@@ -17,6 +17,7 @@ describe('FlagSvg', () => {
     const { container } = render(FlagSvg, { svgContent: sampleSvg })
     const path = container.querySelector('svg > path')
     expect(path).not.toBeNull()
+    expect(path!.namespaceURI).toBe('http://www.w3.org/2000/svg')
     expect(path!.getAttribute('d')).toBe('M0 0h40v40H0z')
   })
 
@@ -31,15 +32,11 @@ describe('FlagSvg', () => {
   })
 
   it('binds ref to the svg element', () => {
-    let svg: SVGSVGElement | null = null
-    render(RefProbe, {
-      svgContent: sampleSvg,
-      onref: (el: SVGSVGElement) => {
-        svg = el
-      },
-    })
-    expect(svg).toBeInstanceOf(SVGElement)
-    expect((svg as unknown as SVGSVGElement).tagName.toLowerCase()).toBe('svg')
+    const onref = vi.fn()
+    const { container } = render(RefProbe, { component: FlagSvg, svgContent: sampleSvg, onref })
+    const svg = container.querySelector('svg')!
+    expect(svg).toBeInstanceOf(SVGSVGElement)
+    expect(onref).toHaveBeenLastCalledWith(svg)
   })
 
   it('forwards arbitrary svg props', () => {
@@ -47,6 +44,20 @@ describe('FlagSvg', () => {
     const svg = container.querySelector('svg')!
     expect(svg.getAttribute('data-testid')).toBe('x')
     expect(svg.getAttribute('class')).toBe('my-flag')
+  })
+
+  it('forwards style and event handlers', () => {
+    const onclick = vi.fn()
+    const { container } = render(FlagSvg, { svgContent: sampleSvg, style: 'vertical-align: middle', onclick })
+    const svg = container.querySelector('svg')!
+    expect(svg.style.verticalAlign).toBe('middle')
+    svg.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(onclick).toHaveBeenCalledOnce()
+  })
+
+  it('accepts class arrays and objects', () => {
+    const { container } = render(FlagSvg, { svgContent: sampleSvg, class: ['flag', { active: true, hidden: false }] })
+    expect(container.querySelector('svg')!.getAttribute('class')).toBe('flag active')
   })
 
   it('defaults size to "1em" for both width and height', () => {
@@ -90,8 +101,28 @@ describe('FlagSvg', () => {
     expect(container.querySelector('svg')!.getAttribute('aria-hidden')).toBeNull()
   })
 
+  it('lets an explicit role win over the title default', () => {
+    const { container } = render(FlagSvg, { svgContent: sampleSvg, title: 'Example', role: 'presentation' })
+    expect(container.querySelector('svg')!.getAttribute('role')).toBe('presentation')
+  })
+
   it('escapes XML metacharacters in title', () => {
     const { container } = render(FlagSvg, { svgContent: sampleSvg, title: `A&B<C>"D"'E` })
     expect(container.querySelector('title')!.textContent).toBe(`A&B<C>"D"'E`)
+  })
+
+  it('updates size and title reactively', async () => {
+    const { container, rerender } = render(FlagSvg, { svgContent: sampleSvg, size: 24 })
+    await rerender({ size: 32, title: 'Example' })
+    const svg = container.querySelector('svg')!
+    expect(svg.getAttribute('width')).toBe('32')
+    expect(svg.getAttribute('role')).toBe('img')
+    expect(svg.getAttribute('aria-hidden')).toBeNull()
+    expect(svg.querySelector('title')!.textContent).toBe('Example')
+
+    await rerender({ title: undefined })
+    expect(svg.getAttribute('role')).toBeNull()
+    expect(svg.getAttribute('aria-hidden')).toBe('true')
+    expect(svg.querySelector('title')).toBeNull()
   })
 })

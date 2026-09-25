@@ -1,5 +1,5 @@
 export { default as CountryFlagRounded } from './CountryFlagRounded.svelte'
 export { default as CountryFlagCircle } from './CountryFlagCircle.svelte'
-export type { CountryFlagProps, FlagComponentProps } from './types.js'
+export type { CountryFlagProps } from './types.js'
 export * from './flags/circle/index.js'
 export * from './flags/rounded/index.js'

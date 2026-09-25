@@ -1,17 +1,24 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/svelte'
+import type { Component } from 'svelte'
 import CountryFlagRounded from '../CountryFlagRounded.svelte'
 import CountryFlagCircle from '../CountryFlagCircle.svelte'
-import DynamicProbe from './DynamicProbe.svelte'
-import type { CountryFlagProps } from '../types.js'
-import type { Component } from 'svelte'
+import { GBCircle, GBRounded, USCircle, USRounded } from '../index.js'
+import type { CountryFlagProps, FlagComponentProps } from '../types.js'
+import RefProbe from './RefProbe.svelte'
 
-const cases: { name: string; Comp: Component<CountryFlagProps> }[] = [
-  { name: 'CountryFlagRounded', Comp: CountryFlagRounded },
-  { name: 'CountryFlagCircle', Comp: CountryFlagCircle },
+type StaticFlag = Component<FlagComponentProps, {}, 'ref'>
+
+const cases: { name: string; Comp: Component<CountryFlagProps, {}, 'ref'>; US: StaticFlag; GB: StaticFlag }[] = [
+  { name: 'CountryFlagRounded', Comp: CountryFlagRounded, US: USRounded, GB: GBRounded },
+  { name: 'CountryFlagCircle', Comp: CountryFlagCircle, US: USCircle, GB: GBCircle },
 ]
 
-describe.each(cases)('$name', ({ Comp }) => {
+function markupOf(Flag: StaticFlag): string {
+  return render(Flag).container.querySelector('svg')!.innerHTML
+}
+
+describe.each(cases)('$name', ({ name, Comp, US, GB }) => {
   it('resolves a lowercase code', () => {
     const { container } = render(Comp, { code: 'us' })
     expect(container.querySelector('svg')).not.toBeNull()
@@ -36,7 +43,7 @@ describe.each(cases)('$name', ({ Comp }) => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const { container } = render(Comp, { code: 'zz' })
     expect(container.querySelector('svg')).toBeNull()
-    expect(warn).toHaveBeenCalledOnce()
+    expect(warn).toHaveBeenCalledExactlyOnceWith(`[@appica/country-flags-svelte] ${name}: unknown country code "zz"`)
     warn.mockRestore()
   })
 
@@ -92,30 +99,19 @@ describe.each(cases)('$name', ({ Comp }) => {
   })
 
   it('forwards ref', () => {
-    let svg: SVGSVGElement | null = null
-    render(DynamicProbe, {
-      component: Comp,
-      code: 'us',
-      onref: (el: SVGSVGElement) => {
-        svg = el
-      },
-    })
-    expect(svg).not.toBeNull()
-    expect((svg as unknown as SVGSVGElement).tagName.toLowerCase()).toBe('svg')
+    const onref = vi.fn()
+    const { container } = render(RefProbe, { component: Comp, code: 'us', onref })
+    const svg = container.querySelector('svg')
+    expect(svg).toBeInstanceOf(SVGSVGElement)
+    expect(onref).toHaveBeenLastCalledWith(svg)
   })
 
   it('forwards ref on the title path too', () => {
-    let svg: SVGSVGElement | null = null
-    render(DynamicProbe, {
-      component: Comp,
-      code: 'us',
-      title: 'United States',
-      onref: (el: SVGSVGElement) => {
-        svg = el
-      },
-    })
-    expect(svg).not.toBeNull()
-    expect((svg as unknown as SVGSVGElement).tagName.toLowerCase()).toBe('svg')
+    const onref = vi.fn()
+    const { container } = render(RefProbe, { component: Comp, code: 'us', title: 'United States', onref })
+    const svg = container.querySelector('svg')
+    expect(svg).toBeInstanceOf(SVGSVGElement)
+    expect(onref).toHaveBeenLastCalledWith(svg)
   })
 
   it('forwards arbitrary svg props', () => {
@@ -123,5 +119,62 @@ describe.each(cases)('$name', ({ Comp }) => {
     const svg = container.querySelector('svg')!
     expect(svg.getAttribute('data-testid')).toBe('flag')
     expect(svg.getAttribute('class')).toBe('my-flag')
+  })
+
+  it('forwards event handlers', () => {
+    const onclick = vi.fn()
+    const { container } = render(Comp, { code: 'us', onclick })
+    container.querySelector('svg')!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(onclick).toHaveBeenCalledOnce()
+  })
+
+  it('renders the same svg as the static component', () => {
+    const props = { size: 24, title: 'United States', class: 'flag', 'aria-hidden': false }
+    const dynamic = render(Comp, { code: 'us', ...props }).container.querySelector('svg')!
+    const fromStatic = render(US, props).container.querySelector('svg')!
+    expect(dynamic.outerHTML).toBe(fromStatic.outerHTML)
+  })
+
+  it('switches to the new flag when code changes', async () => {
+    const { container, rerender } = render(Comp, { code: 'us' })
+    expect(container.querySelector('svg')!.innerHTML).toBe(markupOf(US))
+    await rerender({ code: 'gb' })
+    expect(container.querySelectorAll('svg')).toHaveLength(1)
+    expect(container.querySelector('svg')!.innerHTML).toBe(markupOf(GB))
+  })
+
+  it('updates forwarded props reactively', async () => {
+    const { container, rerender } = render(Comp, { code: 'us', size: 24 })
+    await rerender({ size: 40, title: 'United States' })
+    const svg = container.querySelector('svg')!
+    expect(svg.getAttribute('width')).toBe('40')
+    expect(svg.getAttribute('role')).toBe('img')
+    expect(svg.querySelector('title')!.textContent).toBe('United States')
+  })
+
+  it('points the bound ref at the new svg when code changes', async () => {
+    const onref = vi.fn()
+    const { container, rerender } = render(RefProbe, { component: Comp, code: 'us', onref })
+    const first = container.querySelector('svg')
+    await rerender({ code: 'gb' })
+    const second = container.querySelector('svg')
+    expect(second).not.toBe(first)
+    expect(onref).toHaveBeenLastCalledWith(second)
+  })
+
+  it('clears the bound ref, warns, and recovers when code turns unknown and back', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const onref = vi.fn()
+    const { container, rerender } = render(RefProbe, { component: Comp, code: 'us', onref })
+
+    await rerender({ code: 'zz' })
+    expect(container.querySelector('svg')).toBeNull()
+    expect(onref).toHaveBeenLastCalledWith(null)
+    expect(warn).toHaveBeenCalledExactlyOnceWith(`[@appica/country-flags-svelte] ${name}: unknown country code "zz"`)
+
+    await rerender({ code: 'fr' })
+    expect(onref).toHaveBeenLastCalledWith(container.querySelector('svg'))
+    expect(warn).toHaveBeenCalledOnce()
+    warn.mockRestore()
   })
 })

@@ -1,18 +1,19 @@
 <script lang="ts">
-  import FlagSvg from '../FlagSvg.svelte'
+  import type { Component } from 'svelte'
 
+  // Renders `component` with `bind:ref` and reports every value the binding takes.
   interface Props {
-    svgContent: string
-    title?: string
-    onref: (el: SVGSVGElement) => void
+    component: Component<any, any, 'ref'>
+    onref: (el: SVGSVGElement | null) => void
+    [prop: string]: unknown
   }
 
-  let { svgContent, title, onref }: Props = $props()
+  let { component: Flag, onref, ...props }: Props = $props()
   let ref = $state<SVGSVGElement | null>(null)
 
   $effect(() => {
-    if (ref) onref(ref)
+    onref(ref)
   })
 </script>
 
-<FlagSvg {svgContent} {title} bind:ref />
+<Flag bind:ref {...props} />

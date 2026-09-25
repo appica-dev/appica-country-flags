@@ -46,3 +46,12 @@ Flag components are generated, not hand-written: [`assets/`](./assets) holds the
 5. **Expose generated components through the package root and shape subpaths** (`"./flags/rounded"`, `"./flags/circle"`), mirroring react's `package.json` `exports`.
 
 [`packages/react/scripts/build.ts`](./packages/react/scripts/build.ts) is the reference implementation.
+
+#### The Svelte package
+
+[`packages/svelte`](./packages/svelte) mirrors react's API and is packaged by `svelte-package`, as in appica-icons. Every flag is a thin `.svelte` wrapper around `FlagSvg.svelte` that forwards `bind:ref` and spreads the consumer's props. A few details are load-bearing:
+
+- **Annotate `$props()` in generated flags.** Without the annotation, `svelte-package` emits declarations that leave the flag's props untyped.
+- **Keep each flag's markup in the instance script.** Exported from `<script module>`, the markup would be copied into the flag's `.d.ts` as a string literal type, doubling the published size.
+- **Ship plain JavaScript.** `svelte.config.js` preprocesses with `vitePreprocess({ script: true })`: with current dependencies, Svelte before 5.14.3 can't compile TypeScript in `.svelte` files for SSR, which would break server rendering on part of the `svelte: ^5.0.0` peer range. The `packaging` test fails if TypeScript reaches the output.
+- **Stay on TypeScript 6.** `svelte-check` and `@sveltejs/package` don't support TypeScript 7, which the react package uses, so `pnpm-workspace.yaml` scopes TypeScript 6 to `@sveltejs/package` through `packageExtensions`.

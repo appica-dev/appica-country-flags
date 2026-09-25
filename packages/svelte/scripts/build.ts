@@ -7,19 +7,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const PACKAGE_DIR = join(__dirname, '..')
 
 function renderFlagFile(record: FlagRecord): string {
-  const { innerSvg } = record
   return (
-    `<script lang="ts" module>\n` +
-    `  export const svgContent = ${JSON.stringify(innerSvg)}\n` +
-    `</script>\n` +
     `<script lang="ts">\n` +
-    `  import FlagSvg from '../../FlagSvg.svelte'\n` +
-    `  import type { FlagComponentProps } from '../../types.js'\n` +
-    `\n` +
-    `  let { ref = $bindable(null), ...rest }: FlagComponentProps = $props()\n` +
-    `</script>\n` +
-    `\n` +
-    `<FlagSvg {svgContent} bind:ref {...rest} />\n`
+    `  import FlagSvg from "../../FlagSvg.svelte";\n` +
+    `  import type { FlagComponentProps } from "../../types.js";\n\n` +
+    // Without an annotation, svelte-package emits a .d.ts that references an undeclared
+    // $$ComponentProps type, leaving every flag's props untyped for consumers.
+    `  let { ref = $bindable(null), ...props }: FlagComponentProps = $props();\n\n` +
+    // Instance-level on purpose: exported from <script module>, the markup would be copied into
+    // the flag's .d.ts as a string literal type, doubling the published size.
+    `  const svgContent = ${JSON.stringify(record.innerSvg)};\n` +
+    `</script>\n\n` +
+    `<FlagSvg {svgContent} bind:ref {...props} />\n`
   )
 }
 
