@@ -4,7 +4,7 @@ All notable changes to `@appica/country-flags-svelte`.
 
 The library follows [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-## 1.0.0 - 2026-09-25
+## 1.0.0 - 2026-09-26
 
 The first public release of `@appica/country-flags-svelte`, with the flags and API of `@appica/country-flags-react` 1.1.0.
 
